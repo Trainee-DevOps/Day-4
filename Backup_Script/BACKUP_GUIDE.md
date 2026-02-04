@@ -140,28 +140,32 @@ All operational settings are defined in `backup.conf`.
 **Key parameters:**
 
 ```bash
+# backup.conf
+
 # Source directory to back up
-SOURCE_DIR="/home/username/data"
+SOURCE_DIR="/home/hsf/data"
 
-# Backup storage location
-BACKUP_ROOT="/backups"
+# Backup storage root
+BACKUP_ROOT="/home/hsf/Noob_Dev/Day-4/Backup_Script/backups"
 
-# Snapshot metadata directory
-METADATA_DIR="/backups/.meta"
+# Metadata (snapshots, state)
+METADATA_DIR="/home/hsf/Noob_Dev/Day-4/Backup_Script/backups/.meta"
 
-# Restore destination
+# Restore location
 RESTORE_DIR="/restore"
 
-# Backup log file
-LOG_FILE="/backups/backup.log"
+# Logging
+LOG_FILE="/home/hsf/Noob_Dev/Day-4/Backup_Script/backups/backup.log"
+# LOG_FILE="/var/log/backup_manager.log"
 
-# Minimum required free disk space (in KB)
+# Disk space threshold (KB)
 MIN_FREE_KB=1048576   # 1GB
 
 # Retention policy
 DAILY_RETENTION=7
 WEEKLY_RETENTION=4
 MONTHLY_RETENTION=12
+
 ```
 
 This separation ensures **clean, maintainable, and reusable code**.
@@ -215,7 +219,7 @@ mkdir -p ~/data
 nano backup.conf
 
 # Update SOURCE_DIR to your data location
-SOURCE_DIR="/home/username/data"
+SOURCE_DIR="/home/hsf/data"
 ```
 
 ---
@@ -350,7 +354,7 @@ Enter archive name to restore: full_backup_2026-02-04.tar.gz
 
 ```bash
 ls -la /restore/
-cd /restore/home/username/data
+cd /restore/home/hsf/data
 ls -la
 ```
 
@@ -384,10 +388,10 @@ tar -tzf /backups/2026-02-04/full_backup_2026-02-04.tar.gz
 # Extract specific file
 cd /restore
 sudo tar -xzf /backups/2026-02-04/full_backup_2026-02-04.tar.gz \
-  home/username/data/important.txt
+  home/hsf/data/important.txt
 
 # Copy to original location
-cp /restore/home/username/data/important.txt ~/data/
+cp /restore/home/hsf/data/important.txt ~/data/
 ```
 
 ---
@@ -517,34 +521,34 @@ sudo crontab -e
 
 ```cron
 # Daily incremental backup at 1 AM
-0 1 * * * /home/username/Backup_Script/backup_manager.sh backup incremental >> /var/log/backup_cron.log 2>&1
+0 1 * * * /home/hsf/Backup_Script/backup_manager.sh backup incremental >> /var/log/backup_cron.log 2>&1
 ```
 
 ### Weekly Full Backups
 
 ```cron
 # Weekly full backup on Sunday at 2 AM
-0 2 * * 0 /home/username/Backup_Script/backup_manager.sh backup full >> /var/log/backup_cron.log 2>&1
+0 2 * * 0 /home/hsf/Backup_Script/backup_manager.sh backup full >> /var/log/backup_cron.log 2>&1
 ```
 
 ### Monthly Verification
 
 ```cron
 # Verify backups on 1st of month at 3 AM
-0 3 1 * * /home/username/Backup_Script/backup_manager.sh verify >> /var/log/backup_verify.log 2>&1
+0 3 1 * * /home/hsf/Backup_Script/backup_manager.sh verify >> /var/log/backup_verify.log 2>&1
 ```
 
 ### Complete Schedule Example
 
 ```cron
 # Full backup: Every Sunday at 2:00 AM
-0 2 * * 0 /home/username/Backup_Script/backup_manager.sh backup full
+0 2 * * 0 /home/hsf/Backup_Script/backup_manager.sh backup full
 
 # Incremental backup: Monday-Saturday at 2:00 AM
-0 2 * * 1-6 /home/username/Backup_Script/backup_manager.sh backup incremental
+0 2 * * 1-6 /home/hsf/Backup_Script/backup_manager.sh backup incremental
 
 # Verify: First day of month at 3:00 AM
-0 3 1 * * /home/username/Backup_Script/backup_manager.sh verify
+0 3 1 * * /home/hsf/Backup_Script/backup_manager.sh verify
 ```
 
 **Monitor cron jobs:**
@@ -857,12 +861,18 @@ It is suitable for **entry-level system administrators, DevOps engineers, and Li
 4. Add encryption for sensitive data
 5. Create monitoring alerts
 
----
-
-**Version:** 1.0.0  
-**Last Updated:** February 4, 2026  
-**Author:** HSF
-
----
-
 **End of Guide**
+
+![alt text](image.png)
+
+---
+
+![alt text](image-1.png)
+
+--- 
+
+![alt text](image-2.png)
+
+---
+
+![alt text](image-3.png)
