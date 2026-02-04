@@ -100,3 +100,18 @@ Wed Feb  4 08:07:21 PM +0530 2026 WARNING: CPU usage high (100%)
 Wed Feb  4 08:07:21 PM +0530 2026 ACTION: Killing process PID=24518
 Wed Feb  4 08:07:26 PM +0530 2026 WARNING: CPU usage high (100%)
 Wed Feb  4 08:07:26 PM +0530 2026 ACTION: Killing process PID=25353
+Wed Feb  4 08:27:32 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:27:32 PM +0530 2026 ACTION: Killing process PID=3020
+Wed Feb  4 08:28:06 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:28:06 PM +0530 2026 ACTION: Killing process PID=4275
+Wed Feb  4 08:28:12 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:28:12 PM +0530 2026 ACTION: Killing process PID=4207
+Wed Feb  4 08:28:20 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:28:20 PM +0530 2026 ACTION: Killing process PID=4564
+Wed Feb  4 08:28:46 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:28:47 PM +0530 2026 ACTION: Killing process PID=4610
+Wed Feb  4 08:28:56 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:28:56 PM +0530 2026 ACTION: Killing process PID=2013
+Wed Feb  4 08:29:03 PM +0530 2026 WARNING: CPU usage high (100%)
+Wed Feb  4 08:29:03 PM +0530 2026 ACTION: Killing process PID=5547
+2026-02-04 20:40:05 [INFO] Starting system monitor daemon (PID: 7326)
