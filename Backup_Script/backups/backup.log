@@ -1,0 +1,10 @@
+[2026-02-04 18:35:08] Starting full backup
+[2026-02-04 18:35:08] Backup completed: /home/hsf/Noob_Dev/Day-4/Backup_Script/backups/2026-02-04/full_backup_2026-02-04.tar.gz
+[2026-02-04 18:35:08] Applying retention policy
+[2026-02-04 18:35:31] Starting incremental backup
+[2026-02-04 18:35:31] Backup completed: /home/hsf/Noob_Dev/Day-4/Backup_Script/backups/2026-02-04/incremental_backup_2026-02-04.tar.gz
+[2026-02-04 18:35:31] Applying retention policy
+[2026-02-04 18:35:44] Starting differential backup
+[2026-02-04 18:35:45] Backup completed: /home/hsf/Noob_Dev/Day-4/Backup_Script/backups/2026-02-04/differential_backup_2026-02-04.tar.gz
+[2026-02-04 18:35:45] Applying retention policy
+[2026-02-04 18:36:49] Restore completed to /restore
