@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOG_FILE="package_operations.log"
+STATE_FILE=".last_pkg_op"
+
+timestamp() { date "+%Y-%m-%d %H:%M:%S"; }
+
+log() {
+  echo "[$(timestamp)] $*" | tee -a "$LOG_FILE"
+}
+
+detect_pm() {
+  if command -v apt-get >/dev/null 2>&1; then
+    PM="apt"
+  elif command -v dnf >/dev/null 2>&1; then
+    PM="dnf"
+  elif command -v yum >/dev/null 2>&1; then
+    PM="yum"
+  else
+    echo "No supported package manager found." >&2
+    exit 1
+  fi
+}
+
+show_deps() {
+  pkg="$1"
+  detect_pm
+  log "Showing dependencies for $pkg using $PM"
+  case "$PM" in
+    apt)
+      apt-cache depends "$pkg" || true
+      ;;
+    dnf)
+      if command -v repoquery >/dev/null 2>&1; then
+        repoquery --requires "$pkg" || true
+      else
+        echo "repoquery not available; cannot list dependencies"
+      fi
+      ;;
+    yum)
+      if command -v repoquery >/dev/null 2>&1; then
+        repoquery --requires "$pkg" || true
+      else
+        echo "repoquery not available; cannot list dependencies"
+      fi
+      ;;
+  esac
+}
+
+save_state() {
+  echo "$1 $2" > "$STATE_FILE"
+}
+
+rollback() {
+  if [[ ! -f "$STATE_FILE" ]]; then
+    echo "No operation to rollback."
+    exit 1
+  fi
+  read -r op pkg < "$STATE_FILE"
+  detect_pm
+  log "Rolling back last operation: $op $pkg"
+  case "$op" in
+    install)
+      case "$PM" in
+        apt) sudo apt-get remove -y "$pkg" ;;
+        dnf) sudo dnf remove -y "$pkg" ;;
+        yum) sudo yum remove -y "$pkg" ;;
+      esac
+      ;;
+    remove)
+      case "$PM" in
+        apt) sudo apt-get install -y "$pkg" ;;
+        dnf) sudo dnf install -y "$pkg" ;;
+        yum) sudo yum install -y "$pkg" ;;
+      esac
+      ;;
+    *)
+      echo "Rollback not supported for $op"
+      ;;
+  esac
+  rm -f "$STATE_FILE"
+}
+
+install_pkg() {
+  pkg="$1"
+  detect_pm
+  show_deps "$pkg"
+  log "Installing $pkg"
+  case "$PM" in
+    apt) sudo apt-get update && sudo apt-get install -y "$pkg" ;;
+    dnf) sudo dnf install -y "$pkg" ;;
+    yum) sudo yum install -y "$pkg" ;;
+  esac
+  save_state install "$pkg"
+}
+
+remove_pkg() {
+  pkg="$1"
+  detect_pm
+  log "Removing $pkg"
+  case "$PM" in
+    apt) sudo apt-get remove -y "$pkg" ;;
+    dnf) sudo dnf remove -y "$pkg" ;;
+    yum) sudo yum remove -y "$pkg" ;;
+  esac
+  save_state remove "$pkg"
+}
+
+update_pm() {
+  detect_pm
+  log "Updating package lists"
+  case "$PM" in
+    apt) sudo apt-get update ;;
+    dnf) sudo dnf check-update || true ;;
+    yum) sudo yum check-update || true ;;
+  esac
+  save_state update all
+}
+
+upgrade_pm() {
+  detect_pm
+  log "Upgrading packages"
+  case "$PM" in
+    apt) sudo apt-get upgrade -y ;;
+    dnf) sudo dnf upgrade -y ;;
+    yum) sudo yum update -y ;;
+  esac
+  save_state upgrade all
+}
+
+search_pkg() {
+  pkg="$1"
+  detect_pm
+  log "Searching for $pkg"
+  case "$PM" in
+    apt) apt-cache search "$pkg" ;;
+    dnf) dnf search "$pkg" ;;
+    yum) yum search "$pkg" ;;
+  esac
+}
+
+vuln_scan() {
+  detect_pm
+  log "Running vulnerability scan"
+  case "$PM" in
+    apt)
+      echo "Security updates available:" > vulnerability_scan.txt
+      apt list --upgradable 2>/dev/null | grep -i security || echo "No security updates found" >> vulnerability_scan.txt
+      ;;
+    dnf)
+      echo "Security advisories:" > vulnerability_scan.txt
+      dnf updateinfo list security || echo "No security advisories found" >> vulnerability_scan.txt
+      ;;
+    yum)
+      echo "Security advisories:" > vulnerability_scan.txt
+      yum updateinfo list security || echo "No security advisories found" >> vulnerability_scan.txt
+      ;;
+  esac
+}
+
+case "${1:-}" in
+  install) install_pkg "$2" ;;
+  remove) remove_pkg "$2" ;;
+  update) update_pm ;;
+  upgrade) upgrade_pm ;;
+  search) search_pkg "$2" ;;
+  deps) show_deps "$2" ;;
+  rollback) rollback ;;
+  vuln-scan) vuln_scan ;;
+  *)
+    echo "Usage: $0 {install|remove|update|upgrade|search|deps|rollback|vuln-scan} <package>"
+    exit 1
+    ;;
+esac
