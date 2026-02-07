@@ -11,6 +11,11 @@ source "$CONF"
 MODE="${1:-}"
 BACKUP_TYPE="${2:-}"   # full | incremental | differential
 
+# ./backup_manager.sh backup full 
+# ./backup_manager.sh -> $0
+# backup -> $1
+# full -> $2
+
 TODAY=$(date +%F)
 WEEK=$(date +%V)
 MONTH=$(date +%Y-%m)
